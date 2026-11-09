@@ -1,0 +1,20 @@
+SỔ THEO DÕI TIỀN MỪNG CƯỚI
+
+Bắt đầu sử dụng
+1. Giải nén gói này vào một thư mục trên máy tính.
+2. Mở index.html bằng Chrome, Edge hoặc trình duyệt hiện đại.
+3. Nhập tên khách và số tiền rồi bấm “Lưu khoản mừng”. Mỗi khách hoặc mỗi lần mừng ghi một dòng.
+4. Gõ tên vào ô “Tìm khách mời” để xem nhanh các lượt mừng và tổng tiền đã nhận từ tên khớp.
+5. Khi mừng lại, sửa dòng khách và cập nhật tình trạng, ngày cùng số tiền mừng lại.
+6. Bấm “Xuất Excel” thường xuyên. Giữ file đó ở một thư mục riêng, USB hoặc dịch vụ lưu trữ cá nhân.
+
+Nhập Excel
+- Chọn “Nhập Excel” và chọn mẫu đính kèm hoặc file đã xuất trước đó.
+- “Thay sổ hiện tại” sẽ thay toàn bộ dữ liệu đang có; công cụ sẽ hỏi xác nhận trước khi thay.
+- “Thêm dòng” sẽ nối các dòng trong file vào sổ đang mở.
+- File mẫu có các sheet Tổng quan, Sổ mừng cưới và Hướng dẫn.
+
+Lưu ý về dữ liệu
+- Công cụ hoạt động ngoại tuyến; dữ liệu tự lưu trong trình duyệt trên đúng thiết bị này.
+- Dữ liệu trình duyệt không tự chuyển sang máy khác hoặc trình duyệt khác. File Excel đã xuất là bản sao lưu để khôi phục khi mất dữ liệu hoặc đường dẫn.
+- Thư viện đọc/ghi Excel đi kèm trong thư mục vendor để tính năng nhập/xuất vẫn hoạt động khi không có mạng.

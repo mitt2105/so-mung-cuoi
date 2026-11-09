@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d2e">
+  <meta name="description" content="Công cụ riêng để lưu và tra cứu tiền mừng cưới.">
+  <title>Sổ tiền mừng cưới</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div>
+        <p class="eyebrow">SỔ GIA ĐÌNH</p>
+        <h1>Theo dõi tiền mừng cưới</h1>
+        <p class="header-subtitle">Ghi nhận khoản mừng hôm nay, tra nhanh khi gia đình cần mừng lại.</p>
+      </div>
+      <div class="header-actions">
+        <label class="button button-light" for="excelImport">Nhập Excel</label>
+        <input id="excelImport" type="file" accept=".xlsx,.xls" hidden>
+        <button class="button button-light" id="exportExcel" type="button">Xuất Excel</button>
+        <a class="button button-quiet" href="mau-so-theo-doi-mung-cuoi.xlsx" download>Tải file mẫu</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="backup-note" aria-label="Lưu dữ liệu">
+      <span class="backup-icon" aria-hidden="true">✓</span>
+      <div>
+        <strong id="saveState">Dữ liệu chỉ lưu trên thiết bị này</strong>
+        <p>Xuất Excel định kỳ và giữ một bản sao riêng để không mất sổ khi đổi máy hoặc mất đường dẫn.</p>
+      </div>
+    </section>
+
+    <section class="stats-grid" aria-label="Tổng hợp">
+      <article class="stat-card stat-primary"><span>Tổng tiền nhận</span><strong id="totalReceived">0 ₫</strong></article>
+      <article class="stat-card"><span>Số lượt mừng</span><strong id="giftCount">0</strong></article>
+      <article class="stat-card"><span>Đã mừng lại</span><strong id="returnedCount">0</strong></article>
+      <article class="stat-card"><span>Còn cần nhớ</span><strong id="pendingCount">0</strong></article>
+    </section>
+
+    <section class="workspace-grid">
+      <section class="panel entry-panel" aria-labelledby="entryTitle">
+        <div class="panel-heading">
+          <div><p class="eyebrow">GHI SỔ</p><h2 id="entryTitle">Thêm khoản mừng</h2></div>
+          <span class="step-pill">01</span>
+        </div>
+        <form id="giftForm" autocomplete="off">
+          <div class="form-grid">
+            <label class="field"><span>Ngày nhận</span><input id="giftDate" name="giftDate" type="date" required></label>
+            <label class="field field-wide"><span>Tên khách hoặc gia đình</span><input id="guestName" name="guestName" type="text" maxlength="120" placeholder="Ví dụ: Gia đình anh Phát" required></label>
+            <label class="field"><span>Mối quan hệ</span><input id="relationship" name="relationship" type="text" maxlength="60" placeholder="Bạn bè, họ hàng…"></label>
+            <label class="field"><span>Dịp / bàn</span><input id="occasion" name="occasion" type="text" maxlength="60" placeholder="Tiệc cưới, bàn số…"></label>
+            <label class="field"><span>Số tiền mừng (₫)</span><input id="giftAmount" name="giftAmount" type="number" min="0" step="1000" inputmode="numeric" placeholder="1.000.000" required></label>
+            <label class="field"><span>Hình thức</span><select id="giftMethod" name="giftMethod"><option>Tiền mặt</option><option>Chuyển khoản</option><option>Quà / khác</option></select></label>
+            <label class="field"><span>Tình trạng mừng lại</span><select id="returnStatus" name="returnStatus"><option>Chưa mừng</option><option>Đã mừng</option></select></label>
+            <label class="field"><span>Ngày mừng lại</span><input id="returnDate" name="returnDate" type="date"></label>
+            <label class="field"><span>Số tiền mừng lại (₫)</span><input id="returnAmount" name="returnAmount" type="number" min="0" step="1000" inputmode="numeric" placeholder="Để trống nếu chưa mừng"></label>
+            <label class="field field-wide"><span>Ghi chú</span><input id="giftNote" name="giftNote" type="text" maxlength="180" placeholder="Ghi chú để dễ nhớ sau này"></label>
+          </div>
+          <div class="form-actions">
+            <button class="button button-primary" id="saveGift" type="submit">Lưu khoản mừng</button>
+            <button class="button button-quiet" id="cancelEdit" type="button" hidden>Hủy sửa</button>
+          </div>
+          <p class="form-hint" id="formStatus" role="status" aria-live="polite">Mỗi khách hoặc mỗi lần mừng, ghi thành một dòng riêng.</p>
+        </form>
+      </section>
+
+      <section class="panel search-panel" aria-labelledby="searchTitle">
+        <div class="panel-heading">
+          <div><p class="eyebrow">TRA CỨU NHANH</p><h2 id="searchTitle">Tìm khách mời</h2></div>
+          <span class="step-pill">02</span>
+        </div>
+        <label class="search-box" for="searchInput">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Gõ tên khách, gia đình…" autocomplete="off">
+          <kbd>⌕</kbd>
+        </label>
+        <div id="searchSummary" class="search-summary" hidden></div>
+        <div class="search-tips">
+          <span>Gợi ý</span>
+          <p>Tìm theo một phần tên cũng được. Chọn tên để xem các lần mừng và số tiền.</p>
+        </div>
+        <div class="import-mode-wrap">
+          <label for="importMode">Khi nhập Excel có dữ liệu sẵn</label>
+          <select id="importMode"><option value="replace">Thay sổ hiện tại bằng file này</option><option value="append">Thêm các dòng từ file vào sổ</option></select>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel ledger-panel" aria-labelledby="ledgerTitle">
+      <div class="panel-heading ledger-heading">
+        <div><p class="eyebrow">DANH SÁCH</p><h2 id="ledgerTitle">Các khoản đã ghi</h2></div>
+        <span id="visibleCount" class="count-label">0 dòng</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ngày nhận</th><th>Khách mừng</th><th>Số tiền</th><th>Hình thức</th><th>Mối quan hệ / ghi chú</th><th>Mừng lại</th><th>Đã mừng lại</th><th></th></tr></thead>
+          <tbody id="giftRows"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-illustration" aria-hidden="true">♡</div>
+          <strong>Chưa có khoản mừng nào</strong>
+          <p>Thêm khoản đầu tiên ở biểu mẫu phía trên hoặc nhập sổ Excel cũ.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <span>Không có tài khoản hay máy chủ lưu dữ liệu.</span>
+      <span>Giữ lại file Excel đã xuất để có bản dự phòng.</span>
+    </footer>
+  </main>
+
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
